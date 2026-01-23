@@ -1,34 +1,12 @@
-variable "aws_region" {
-  type        = string
-  description = "AWS region"
-}
-
-variable "project_name" {
-  type        = string
-  description = "Project name for tagging"
-}
-
+variable "aws_region" {}
+variable "project_name" {}
 variable "vpc_id" {
-  type        = string
-  description = "Existing VPC ID"
+  default = ""
 }
-
 variable "public_subnet_ids" {
-  type        = list(string)
-  description = "List of existing public subnet IDs"
+  type    = list(string)
+  default = []
 }
-
-variable "github_token" {
-  type        = string
-  description = "GitHub personal access token for CodePipeline"
-}
-
-variable "github_repo" {
-  type        = string
-  description = "GitHub repo name (example: web-app)"
-}
-
-variable "github_owner" {
-  type        = string
-  description = "GitHub owner/org name"
-}
+variable "github_token" {}
+variable "github_repo" {}
+variable "github_owner" {}
