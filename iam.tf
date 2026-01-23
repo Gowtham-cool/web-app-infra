@@ -1,3 +1,4 @@
+# CodeBuild role
 resource "aws_iam_role" "codebuild_role" {
   name = "${var.project_name}-codebuild-role"
   assume_role_policy = jsonencode({
