@@ -21,7 +21,7 @@ variable "project_name" {
 variable "allowed_ssh_ip" {
   description = "Your IP address allowed to SSH into EC2"
   type        = string
-  default     = "0.0.0.0/0"   # Update later with your public IP
+  default     = "100.48.206.148/32"   # Update later with your public IP
 }
 
 variable "vpc_id" {
