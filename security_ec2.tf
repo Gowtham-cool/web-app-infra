@@ -53,4 +53,3 @@ resource "aws_instance" "web" {
     Name = "${var.project_name}-ec2"
   }
 }
-
