@@ -1,66 +1,98 @@
-# -------------------------------
-# 1️⃣ CodeBuild Role
-# -------------------------------
+# Create IAM role for CodeBuild
 resource "aws_iam_role" "codebuild_role" {
-  name = "${var.project_name}-codebuild-role"
+  name = "codebuild-role"
 
   assume_role_policy = jsonencode({
-    Version = "2012-10-17",
-    Statement = [{
-      Effect    = "Allow",
-      Principal = {
-        Service = "codebuild.amazonaws.com"
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = "sts:AssumeRole"
+        Principal = {
+          Service = "codebuild.amazonaws.com"
+        }
+        Effect = "Allow"
+        Sid    = ""
       },
-      Action    = "sts:AssumeRole"
-    }]
+    ]
   })
 }
 
-resource "aws_iam_role_policy_attachment" "codebuild_policy" {
-  role       = aws_iam_role.codebuild_role.name
-  policy_arn = "arn:aws:iam::aws:policy/AmazonSSMFullAccess"
-}
-
-# -------------------------------
-# 2️⃣ EC2 Terraform Execution Role Policy
-# -------------------------------
-resource "aws_iam_policy" "terraform_ec2_policy" {
-  name        = "${var.project_name}-terraform-ec2-policy"
-  description = "Minimal permissions for EC2 instance to run Terraform"
+resource "aws_iam_role_policy" "codebuild_policy" {
+  name = "codebuild-policy"
+  role = aws_iam_role.codebuild_role.id
 
   policy = jsonencode({
-    Version = "2012-10-17",
+    Version = "2012-10-17"
     Statement = [
       {
-        Effect = "Allow",
         Action = [
-          # EC2 & Networking
-          "ec2:Describe*",
-          "ec2:CreateSecurityGroup",
-          "ec2:AuthorizeSecurityGroupIngress",
-          "ec2:AuthorizeSecurityGroupEgress",
-          "ec2:RevokeSecurityGroupIngress",
-          "ec2:RevokeSecurityGroupEgress",
-          "ec2:CreateTags",
-          "ec2:RunInstances",
-          "ec2:TerminateInstances",
-          "ec2:CreateSubnet",
-          "ec2:CreateRouteTable",
-          "ec2:CreateInternetGateway",
-          "ec2:AttachInternetGateway",
-          # ELB / ALB
-          "elasticloadbalancing:*",
-          # IAM pass role
-          "iam:PassRole"
-        ],
+          "s3:GetObject",
+          "s3:PutObject",
+          "s3:ListBucket"
+        ]
+        Resource = "arn:aws:s3:::*"
+        Effect   = "Allow"
+      },
+      {
+        Action = [
+          "ec2:DescribeInstances",
+          "ec2:DescribeSecurityGroups"
+        ]
         Resource = "*"
+        Effect   = "Allow"
+      },
+      {
+        Action = "logs:*"
+        Resource = "*"
+        Effect   = "Allow"
       }
     ]
   })
 }
 
-# Attach the policy to the EC2 role that Terraform uses
-resource "aws_iam_role_policy_attachment" "attach_terraform_policy" {
-  role       = "ec2-ssm-role" # replace with your EC2 IAM role name if different
-  policy_arn = aws_iam_policy.terraform_ec2_policy.arn
+# Create IAM role for CodePipeline
+resource "aws_iam_role" "codepipeline_role" {
+  name = "codepipeline-role"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = "sts:AssumeRole"
+        Principal = {
+          Service = "codepipeline.amazonaws.com"
+        }
+        Effect = "Allow"
+        Sid    = ""
+      },
+    ]
+  })
+}
+
+resource "aws_iam_role_policy" "codepipeline_policy" {
+  name = "codepipeline-policy"
+  role = aws_iam_role.codepipeline_role.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = [
+          "codebuild:BatchGetBuilds",
+          "codebuild:StartBuild",
+          "s3:GetObject",
+          "s3:PutObject",
+          "s3:ListBucket",
+          "cloudwatch:PutMetricData"
+        ]
+        Resource = "*"
+        Effect   = "Allow"
+      },
+      {
+        Action = "logs:*"
+        Resource = "*"
+        Effect   = "Allow"
+      }
+    ]
+  })
 }
