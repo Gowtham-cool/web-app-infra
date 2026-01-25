@@ -1,7 +1,6 @@
 # -------------------------------
 # Security Group for EC2
 # -------------------------------
-
 resource "aws_security_group" "web_sg" {
   name        = "${var.project_name}-sg"
   description = "Allow SSH and HTTP"
@@ -34,9 +33,8 @@ resource "aws_security_group" "web_sg" {
 }
 
 # -------------------------------
-# Fetch the latest Amazon Linux 2 AMI
+# Fetch latest Amazon Linux 2 AMI
 # -------------------------------
-
 data "aws_ami" "amazon_linux_2" {
   most_recent = true
   owners      = ["amazon"]
@@ -50,7 +48,6 @@ data "aws_ami" "amazon_linux_2" {
 # -------------------------------
 # EC2 Instance
 # -------------------------------
-
 resource "aws_instance" "web" {
   ami                    = data.aws_ami.amazon_linux_2.id
   instance_type          = "t2.micro"
