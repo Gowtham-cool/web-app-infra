@@ -34,7 +34,7 @@ resource "aws_security_group" "web_sg" {
 }
 
 # -------------------------------
-# EC2 AMI Data Source (dynamic)
+# Fetch latest Amazon Linux 2 AMI
 # -------------------------------
 
 data "aws_ami" "amazon_linux_2" {
