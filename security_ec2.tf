@@ -37,7 +37,7 @@ resource "aws_security_group" "web_sg" {
 # -------------------------------
 resource "aws_instance" "web" {
   ami                    = "ami-026992d753d5622bc"  # Hardcoded Amazon Linux 2 in us-east-1
-  instance_type          = "t2.micro"
+  instance_type          = "t3.micro"
   subnet_id              = length(var.public_subnet_ids) > 0 ? var.public_subnet_ids[0] : aws_subnet.public[0].id
   vpc_security_group_ids = [aws_security_group.web_sg.id]
 
