@@ -52,7 +52,7 @@ data "aws_ami" "amazon_linux_2" {
 # -------------------------------
 
 resource "aws_instance" "web" {
-  ami                    = "ami-0abcdef1234567890"  # <-- update with latest ID
+  ami                    = data.aws_ami.amazon_linux_2.id
   instance_type          = "t2.micro"
   subnet_id              = length(var.public_subnet_ids) > 0 ? var.public_subnet_ids[0] : aws_subnet.public[0].id
   vpc_security_group_ids = [aws_security_group.web_sg.id]
