@@ -19,9 +19,9 @@ variable "project_name" {
 # -------------------------------
 
 variable "allowed_ssh_ip" {
-  description = "Your IP address allowed to SSH into EC2"
+  description = "Your public IP address allowed to SSH into EC2"
   type        = string
-  default     = "100.48.206.148/32"   # Update later with your public IP
+  default     = "0.0.0.0/0"  # Update later to your actual public IP
 }
 
 variable "vpc_id" {
@@ -37,7 +37,7 @@ variable "public_subnet_ids" {
 }
 
 # -------------------------------
-# GitHub / CI-CD
+# GitHub / CI-CD (optional for now)
 # -------------------------------
 
 variable "github_token" {
